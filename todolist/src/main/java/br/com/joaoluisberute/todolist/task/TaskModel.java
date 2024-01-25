@@ -27,11 +27,11 @@ public class TaskModel {
 
     @Column(length = 20)
     private String status;
-    
+
     @Column(length = 20)
     private String priority;
-    private LocalDateTime initTask;
-    private LocalDateTime finalTask;
+    private LocalDateTime timeToInitTaskAt;
+    private LocalDateTime timeToFinalTaskAt;
     private Time timeInTask;
 
 
