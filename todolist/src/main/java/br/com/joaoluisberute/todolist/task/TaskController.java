@@ -32,4 +32,12 @@ public class TaskController {
         // Retornando um response com um estatus "OK" e as informações da task criada
         return ResponseEntity.status(HttpStatus.OK).body(taskCreated);
     }
+
+    //Criar um metodo Get
+    
+    //Criar um metodo Put
+
+    //Criar um metodo Delete
+
+    //Criar um metodo Update
 }
