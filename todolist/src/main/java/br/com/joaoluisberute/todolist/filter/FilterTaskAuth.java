@@ -28,6 +28,8 @@ public class FilterTaskAuth extends OncePerRequestFilter {
 
         var servletPath = request.getServletPath();
 
+        //Mudar de ".equals()" para ".startWith()"
+
         if(servletPath.equals("/Task/CreateTask")){
 
             // Guarda na variavel authHeaderAuthorization o tipo de autorização e as informações da autorização em si na forma de BASE64 ("TypeAuth"+" "+"d5fs4654fvsdfzx342#$")

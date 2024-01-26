@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface ITaskRepository extends JpaRepository<TaskModel, UUID>{
+
+    //Adicionar um metodo para encontrar uma task por ID
  
 }
