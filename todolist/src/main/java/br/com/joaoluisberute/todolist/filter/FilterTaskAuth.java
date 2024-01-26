@@ -66,8 +66,8 @@ public class FilterTaskAuth extends OncePerRequestFilter {
                     // Adiciona no registro da task o "idUser" que nada mais é que o id do usuario que esta criando a task para ficar registrado ser o dono dela
                     request.setAttribute("idUser", user.getId());
 
+                    // Passa os argumetos "request" e "response" para a próxima camada da aplicação
                     filterChain.doFilter(request, response);
-
                 }
                 // Caso o usuario não seja autenticado é enviado um erro no "response"
                 else{
@@ -89,6 +89,7 @@ public class FilterTaskAuth extends OncePerRequestFilter {
         // Caso não necessite de verificação passa os argumetos "request" e "response" para a próxima camada da aplicação
         else{
                 
+            // Passa os argumetos "request" e "response" para a próxima camada da aplicação sem realizar nenhuma validação
             filterChain.doFilter(request, response);
         }
     }    

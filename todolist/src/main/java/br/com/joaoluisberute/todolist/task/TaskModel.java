@@ -24,6 +24,7 @@ public class TaskModel {
     @Column(length = 200)
     private String title;
     private String description;
+    private String category;
 
     @Column(length = 20)
     private String status;
