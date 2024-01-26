@@ -40,17 +40,8 @@ public class FilterTaskAuth extends OncePerRequestFilter {
 
             String[] arrayWithUserAndPassword = authorizationParsedToString.split(":");
 
-            System.out.println(authorizationParsedToString);
-            
             var username = arrayWithUserAndPassword[0];
             var password = arrayWithUserAndPassword[1];
-
-            System.out.println("Username:");
-            System.out.println(username.length());
-            
-            System.out.println("Password:");
-            System.out.println(password);
-            
                 
             if(username.length() != 0 || password.length() != 0){
 
