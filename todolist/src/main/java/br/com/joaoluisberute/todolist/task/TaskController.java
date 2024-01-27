@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -45,7 +45,7 @@ public class TaskController {
 
             taskModel.setIdUser(null);
 
-            return ResponseEntity.status(402).body(taskModel);
+            return ResponseEntity.status(401).body(taskModel);
         }
 
         // Salvando a task no DB e em uma variavel para ser retornada na response
@@ -57,13 +57,15 @@ public class TaskController {
 
     //Criar um metodo Get
     @GetMapping("/SeeAllMyTasks")
-    public List<TaskModel> SeeMyTasks(@NonNull @RequestParam UUID idUser) {
+    public List<TaskModel> SeeAllMyTasks(HttpServletRequest request) {
 
+        var idUser = request.getAttribute("idUser");
+        
         // Buscando a task no DB e em uma variavel para ser retornada na response
-        var taskCreated = this.taskRepository.findByIdUser(idUser);
+        var listOfTasksCreated = this.taskRepository.findByIdUser((UUID) idUser);
         
         // Retornando um response com um estatus "OK" e as informações da task criada
-        return taskCreated;
+        return listOfTasksCreated;
     }
     
     //Criar um metodo Put
