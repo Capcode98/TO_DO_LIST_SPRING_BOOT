@@ -74,9 +74,7 @@ public class FilterTaskAuth extends OncePerRequestFilter {
 
                     // Envio de erro via "response" por não ser autenticado o usuario 
                     response.sendError(401);
-
                 }
-            
             }
             // Caso o usuario ou a senha estejam vazias, uma mensagem de erro é enviada no "response"
             else{

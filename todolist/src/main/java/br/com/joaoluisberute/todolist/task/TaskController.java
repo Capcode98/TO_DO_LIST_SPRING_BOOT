@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 
@@ -69,6 +73,17 @@ public class TaskController {
     }
     
     //Criar um metodo Put
+    @PutMapping("/EditTask/{id}")
+    public TaskModel EditTask(@PathVariable UUID id, @RequestBody TaskModel taskModel, HttpServletRequest request) {
+        
+        var entity = this.taskRepository.findById(id); 
+        
+        BeanUtils.copyProperties(entity, taskModel, "id", "idUser"); 
+        
+        TaskModel taskSaved = this.taskRepository.saveAndFlush(entity);  
+        
+        return taskSaved;
+    }
 
     //Criar um metodo Delete
 
