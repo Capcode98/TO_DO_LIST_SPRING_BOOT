@@ -29,6 +29,7 @@ public class TaskController {
     @Autowired
     private ITaskRepository taskRepository;
 
+    //Metodo para criar uma task
     @PostMapping("/CreateTask")
     public ResponseEntity<TaskModel> CreatTask(@NonNull @RequestBody TaskModel taskModel, HttpServletRequest request) {
 
@@ -59,7 +60,7 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(taskCreated);
     }
 
-    //Criar um metodo Get
+    //Metodo para ver todas as tasks
     @GetMapping("/SeeAllMyTasks")
     public List<TaskModel> SeeAllMyTasks(HttpServletRequest request) {
 
@@ -71,8 +72,28 @@ public class TaskController {
         // Retornando um response com um estatus "OK" e as informações da task criada
         return listOfTasksCreated;
     }
+
+    //Metodo para ver uma task especifica
+    @GetMapping("/SeeMySpecificTask/{id}")
+    public TaskModel SeeMySpecificTask(@PathVariable UUID id, HttpServletRequest request) {
+
+        var idUser = request.getAttribute("idUser");
+        System.out.println("idUser: " + idUser);
+        
+        // Buscando a task no DB e em uma variavel para ser retornada na response
+        var listOfTasksCreated = this.taskRepository.findByIdUser((UUID) idUser);
+
+        System.out.println("Lista: "+listOfTasksCreated);
+
+        for (TaskModel taskModel : listOfTasksCreated) {
+            if(taskModel.getId().equals(id)){
+                return taskModel;
+            }
+        }
+        return null;
+    }
     
-    //Criar um metodo Put
+    //Metodo para editar uma task
     @PutMapping("/EditTask/{id}")
     public TaskModel EditTask(@PathVariable UUID id, @RequestBody TaskModel taskModel, HttpServletRequest request) {
         
