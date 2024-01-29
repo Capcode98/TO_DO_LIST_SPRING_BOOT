@@ -3,8 +3,6 @@ package br.com.joaoluisberute.todolist.task;
 import java.util.UUID;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +12,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import br.com.joaoluisberute.todolist.Utils.Utils;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.var;
 
 
 @RestController
@@ -38,6 +40,12 @@ public class TaskController {
 
         // Adiciona a data e hora atual no momento da criação da task
         var currentDateTime = LocalDateTime.now();
+
+        if(taskModel.getTimeToInitTaskAt()==null){
+
+            taskModel.setTimeToInitTaskAt(currentDateTime);
+
+        }
 
         if(currentDateTime.isAfter(taskModel.getTimeToInitTaskAt()) || currentDateTime.isAfter(taskModel.getTimeToFinalTaskAt())){
 
@@ -94,34 +102,56 @@ public class TaskController {
     
     //Metodo para editar uma task
     @PutMapping("/EditTask/{id}")
-    public TaskModel EditTask(@PathVariable @NonNull UUID id, @RequestBody TaskModel taskModel, HttpServletRequest request) {
+    public ResponseEntity<TaskModel> EditTask(@PathVariable @NonNull UUID id,@NonNull @RequestBody TaskModel taskModel, @NonNull HttpServletRequest request) {
 
-        var entity = this.taskRepository.findById(id);
+        var idUser = request.getAttribute("idUser");
+        
+        // Buscando a task no DB e em uma variavel para ser retornada na response
+        var listOfTasksCreated = this.taskRepository.findByIdUser((UUID) idUser);
 
-        if (taskModel != null) {
-            BeanUtils.copyProperties(entity, taskModel, "id", "idUser", "createdAt");
+        for (TaskModel entity : listOfTasksCreated) {
+
+            if(entity.getId().equals(id)){
+
+                Utils.copyNonNullProperties(taskModel, entity);
+        
+                TaskModel taskSaved = this.taskRepository.save(entity);
+        
+                // Retornando um response com um estatus "OK" e as informações da task criada
+                return ResponseEntity.status(HttpStatus.OK).body(taskSaved);
+            }
         }
 
-        System.out.println("entity: "+entity);
-        System.out.println("taskModel: "+taskModel);
+        // Retornando um response com um estatus "OK" e as informações da task criada
+        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(taskModel);
 
-        TaskModel taskSaved = this.taskRepository.saveAndFlush(entity);
-        
-        System.out.println("taskSaved: "+taskSaved);
-        
-        return taskSaved;
     }
 
     //Criar um metodo Delete
     @DeleteMapping("/DeleteTask/{id}")
-    public void deleteTask(@NonNull @PathVariable UUID id){
-        try{
-            this.taskRepository.deleteById(id);
-        }catch(Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Erro ao deletar a task");
+    public void deleteTask(@NonNull @PathVariable UUID id, @NonNull HttpServletRequest request){
+
+        var idUser = request.getAttribute("idUser");
+        
+        // Buscando a task no DB e em uma variavel para ser retornada na response
+        TaskModel task = this.taskRepository.findByIdAndIdUser((UUID)id, (UUID) idUser);
+
+        if(task == null){
+
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Task não encontrada ou não pertence ao seu usuario");
+
+        }
+        
+        else{
+            
+            try{
+
+                this.taskRepository.deleteById(id);
+
+            }catch(Exception e){
+
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Erro ao deletar a task");
+            }
         }
     }
-    
-
-    //Criar um metodo Update
 }
