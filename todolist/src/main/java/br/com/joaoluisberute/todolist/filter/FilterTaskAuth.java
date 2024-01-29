@@ -67,6 +67,12 @@ public class FilterTaskAuth extends OncePerRequestFilter {
                     // Adiciona no registro da task o "idUser" que nada mais é que o id do usuario que esta criando a task para ficar registrado ser o dono dela
                     request.setAttribute("idUser", user.getId());
 
+                    //MUITO INTERESSANTE
+                    request.setAttribute("Flag", "meu amorzinho");
+
+                    //MUITO INTERESSANTE
+                    System.out.println("Flag: "+request.getAttribute("Flag"));
+
                     // Passa os argumetos "request" e "response" para a próxima camada da aplicação
                     filterChain.doFilter(request, response);
                 }

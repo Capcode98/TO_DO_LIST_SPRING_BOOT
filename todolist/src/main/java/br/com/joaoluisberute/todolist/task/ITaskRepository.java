@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface ITaskRepository extends JpaRepository<TaskModel, UUID>{
     @NonNull Optional<TaskModel> findById(@NonNull UUID id);
     List<TaskModel> findByIdUser(UUID idUser);
+    TaskModel saveAndFlush(@NonNull Optional<TaskModel> taskModel);
+    void deleteById(@NonNull UUID id);
 }
